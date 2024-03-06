@@ -1,0 +1,39 @@
+---
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks.git
+  rev: v4.0.1
+  hooks:
+  - id: check-yaml
+    args: [--allow-multiple-documents]
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+  - id: check-case-conflict
+  - id: check-merge-conflict
+  - id: check-executables-have-shebangs
+- repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt.git
+  rev: 0.1.1
+  hooks:
+  - id: yamlfmt
+    args: [--mapping, '2', --sequence, '2', --offset, '0', --width, '150', --preserve-quotes]
+- repo: https://github.com/pecigonzalo/pre-commit-terraform-vars.git
+  rev: v1.0.0
+  hooks:
+  - id: terraform-vars
+- repo: https://github.com/antonbabenko/pre-commit-terraform.git
+  rev: v1.50.0
+  hooks:
+  - id: terraform_fmt
+    exclude: \.terraform\/.*$
+  - id: terraform_validate
+    args: ['--envs=AWS_DEFAULT_REGION="eu-west-1']
+- repo: https://github.com/ambv/black.git
+  rev: 22.3.0
+  hooks:
+  - id: black
+    language_version: python3.9
+- repo: https://github.com/pycqa/flake8
+  rev: 3.7.9
+  hooks:
+  - id: flake8
+    exclude: tests/
+    args: ['--ignore=E501']

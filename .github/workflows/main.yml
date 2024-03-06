@@ -1,0 +1,203 @@
+---
+name: 'main'
+
+on:
+  push:
+    branches:
+    - master
+    - main
+
+env:
+  DEPLOY_PROJECT: 'demo'
+  TF_BUCKET_BASE_NAME: 'data-eng-terraform-backend'
+  PYTHON_VERSION: '3.9'
+  TF_VERSION: '0.14.9'
+  AWS_REGION: 'eu-west-1'
+  CHECKOV_VERSION: '2.0.45'
+  TERRAFORM_ROOT_DIR: 'terraform/environments'
+
+jobs:
+  run-params:
+    name: Calculate Key Run Parameters
+    runs-on: ubuntu-latest
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        mask-aws-account-id: 'no'
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+
+
+  lint:
+    name: Lint Project
+    runs-on: ubuntu-latest
+    needs: [run-params]
+    env:
+      SKIP: terraform_validate
+    steps:
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1.2.1
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+    - name: Pre-Commit
+      uses: pre-commit/action@v2.0.0
+
+  checkov:
+    name: Configuration Checks (checkov)
+    runs-on: ubuntu-latest
+    needs: [run-params]
+    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        tf-environment: ["infrastructure"]
+    steps:
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+    - name: Run Checkov
+      run: |
+        docker container run \
+          -t \
+          -v ${{ github.workspace }}/${{ env.TERRAFORM_ROOT_DIR }}:/tf bridgecrew/checkov:${{ env.CHECKOV_VERSION }} \
+          -d /tf/${{matrix.tf-environment}} \
+          --quiet
+
+  unit-test:
+    name: ETL/Model Unit Tests
+    runs-on: ubuntu-latest
+    needs: [run-params]
+    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
+    steps:
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+    - name: Run Tests
+      run: docker-compose up --exit-code-from unit-test --build unit-test
+    - name: Show/Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1.7
+      if: always()
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        files: test-results/**/test-*.xml
+        comment_on_pr: false
+
+  integration-test:
+    name: Model Service Integration Tests
+    runs-on: ubuntu-latest
+    needs: [run-params]
+    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
+    steps:
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+    - name: Run Tests
+      run: docker-compose up --exit-code-from integration-test --build integration-test
+    - name: Show/Publish Integratin Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1.7
+      if: always()
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        files: test-results/**/test-*.xml
+        comment_on_pr: false
+
+  tf-plan:
+    name: TF Plan for DEV
+    runs-on: ubuntu-latest
+    needs: [run-params]
+    strategy:
+      matrix:
+        tf-environment: ['infrastructure']
+    steps:
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1.2.1
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Initialize and Plan Terraform
+      run: |
+        cd terraform/environments/${{ matrix.tf-environment }}
+        terraform init -backend-config="bucket=${{ env.TF_BUCKET_BASE_NAME }}" -backend-config="key=statefile.tfstate" -backend-config="region=${{ env.AWS_REGION }}"
+        terraform plan -out=tfplan
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
+
+    - name: Upload Terraform Plan as Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: terraform-plan-${{ matrix.tf-environment }}
+        path: terraform/environments/${{ matrix.tf-environment }}/tfplan
+
+  tf-apply-dev:
+    name: DEV TF Apply
+    runs-on: ubuntu-latest
+    needs: [run-params, lint, checkov, unit-test, integration-test, tf-plan]
+    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        stage:
+        - name: 'dev'
+          workspace: 'default'
+          access_key_id: 'AWS_ACCESS_KEY'
+          secret_access_key: 'AWS_SECRET_ACCESS_KEY'
+        tf-environment: ['infrastructure']
+    steps:
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install VirtualEnv
+      run: pip3 install virtualenv
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1.2.1
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets[matrix.stage.access_key_id] }}
+        aws-secret-access-key: ${{ secrets[matrix.stage.secret_access_key] }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Download Terraform Plan
+      uses: actions/download-artifact@v2
+      with:
+        name: terraform-plan-${{ matrix.tf-environment }}
+        path: ${{ github.workspace }}/terraform-plan
+
+    - name: TF Apply
+      if: always()
+      run: |
+        cd terraform/environments/${{ matrix.tf-environment }}
+        terraform apply -auto-approve ${{ github.workspace }}/terraform-plan/tfplan
