@@ -1,3 +1,0 @@
-﻿id,idkit_uuid,created_at,vin,commission_number,invited_by_dealership_id,country,brand,identity_check_enabled,primary_user_enabled,preferred_dealership_enabled,automatic_service_scheduling_enabled,invite_status
-0,1cd4877e-3fbf-460D,28-07-2022,Beispieltext 4,186 ABE8072022,2022-02-07 02:26:44.000000,Beispieltext 1,7668.38,9773.93,9043.33,5822.36,2022.98,InvitationSent
-1,1cd4877e-3fbf-460E,26-12-2022,Beispieltext 1,186 ABD8072022,2022-03-03 13:07:52.000000,Beispieltext 3,2560.57,7058.17,2709.37,2803.47,8214.32,InvitationDelivered
