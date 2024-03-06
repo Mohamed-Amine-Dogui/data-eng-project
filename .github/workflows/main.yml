@@ -132,41 +132,40 @@ jobs:
       matrix:
         tf-environment: ['infrastructure']
     steps:
-      - name: Checkout This Repo
-        uses: actions/checkout@v2
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
 
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1.2.1
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1.2.1
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    - name: Initialize and Plan Terraform
+      run: |
+        cd terraform/environments/${{ matrix.tf-environment }}
+        terraform init
+        terraform plan -out=tfplan
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
 
-      - name: Initialize and Plan Terraform
-        run: |
-          cd terraform/environments/${{ matrix.tf-environment }}
-          terraform init
-          terraform plan -out=tfplan
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
-
-      - name: Upload Terraform Plan as Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: terraform-plan-${{ matrix.tf-environment }}
-          path: terraform/environments/${{ matrix.tf-environment }}/tfplan
+    - name: Upload Terraform Plan as Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: terraform-plan-${{ matrix.tf-environment }}
+        path: terraform/environments/${{ matrix.tf-environment }}/tfplan
 
   tf-apply-dev:
     name: DEV TF Apply
