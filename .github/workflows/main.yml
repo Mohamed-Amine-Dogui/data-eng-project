@@ -41,6 +41,9 @@ jobs:
         eval "$(ssh-agent -s)"
         ssh-add ${{ github.workspace }}/.ssh/id_rsa
 
+    - name: Test SSH connection
+      run: ssh -Tvv git@github.com
+
   lint:
     name: Lint Project
     runs-on: ubuntu-latest
