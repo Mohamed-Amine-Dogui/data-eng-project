@@ -43,7 +43,6 @@ jobs:
 
 #    - name: Test SSH connection
 #      run: ssh -Tvv git@github.com
-
   lint:
     name: Lint Project
     runs-on: ubuntu-latest
