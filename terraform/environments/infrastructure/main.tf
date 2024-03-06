@@ -234,29 +234,29 @@ module "fstream_labels" {
 ########################################################################################################################
 ###  fasttrack Monitoring Labels
 ########################################################################################################################
-module "fasttrack_monitoring_labels" {
-  source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
-
-  project        = var.project
-  stage          = var.stage
-  name           = var.fasttrack_monitoring_label
-  layer          = var.stage
-  project_id     = var.project_id
-  kst            = var.tag_KST
-  wa_number      = var.wa_number
-  git_repository = var.git_repository
-
-  additional_tags = {
-    ApplicationID = "demo_onetom_fast_track"
-    ProjectID     = "demo"
-  }
-
-  resources = [
-    "fast_track_lambda_alarm_event_rule",
-    "fast_track_step_func_event_rule"
-  ]
-
-}
+#module "fasttrack_monitoring_labels" {
+#  source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
+#
+#  project        = var.project
+#  stage          = var.stage
+#  name           = var.fasttrack_monitoring_label
+#  layer          = var.stage
+#  project_id     = var.project_id
+#  kst            = var.tag_KST
+#  wa_number      = var.wa_number
+#  git_repository = var.git_repository
+#
+#  additional_tags = {
+#    ApplicationID = "demo_onetom_fast_track"
+#    ProjectID     = "demo"
+#  }
+#
+#  resources = [
+#    "fast_track_lambda_alarm_event_rule",
+#    "fast_track_step_func_event_rule"
+#  ]
+#
+#}
 
 ########################################################################################################################
 ###  Redshift
