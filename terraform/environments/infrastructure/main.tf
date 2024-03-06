@@ -117,7 +117,7 @@ data "aws_caller_identity" "current" {}
 ###  generic resources Labels
 ########################################################################################################################
 module "generic_labels" {
-  source         = "git@github.com:Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
+  source         = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
   git_repository = var.git_repository
   project        = var.project
   stage          = var.stage
@@ -141,7 +141,7 @@ module "generic_labels" {
 ###  fsag Labels
 ########################################################################################################################
 module "fsag_labels" {
-  source = "git@github.com:Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
+  source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
 
   project        = var.project
   stage          = var.stage
@@ -173,7 +173,7 @@ module "fsag_labels" {
 ###  cc Labels
 ########################################################################################################################
 module "cc_labels" {
-  source = "git@github.com:Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
+  source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
 
   project        = var.project
   stage          = var.stage
@@ -203,7 +203,7 @@ module "cc_labels" {
 ###  fstream Labels
 ########################################################################################################################
 module "fstream_labels" {
-  source = "git@github.com:Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
+  source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
 
   project        = var.project
   stage          = var.stage
@@ -235,7 +235,7 @@ module "fstream_labels" {
 ###  fasttrack Monitoring Labels
 ########################################################################################################################
 module "fasttrack_monitoring_labels" {
-  source = "git@github.com:Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
+  source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
 
   project        = var.project
   stage          = var.stage
