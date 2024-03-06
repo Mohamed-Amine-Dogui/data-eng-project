@@ -136,10 +136,10 @@ variable "tag_KST" {
 #  }
 #}
 #
-#variable "fsag_label" {
-#  description = "fsag label context"
-#  default     = "fsag-etl"
-#}
+variable "fsag_label" {
+  description = "fsag label context"
+  default     = "fsag-etl"
+}
 #
 #########################################################################################################################
 ####  Redshift variables
@@ -174,10 +174,10 @@ variable "tag_KST" {
 #  default     = "onecrm-campaign-cockpit-target-data"
 #  type        = string
 #}
-#variable "cc_label" {
-#  description = "cc label context"
-#  default     = "cc-etl"
-#}
+variable "cc_label" {
+  description = "cc label context"
+  default     = "cc-etl"
+}
 #
 #
 #variable "cc_target_bucket_directory_name" {
@@ -188,11 +188,11 @@ variable "tag_KST" {
 #########################################################################################################################
 ####  fstream variables
 #########################################################################################################################
-#variable "fstream_label" {
-#  description = "fstream label context"
-#  default     = "fstream"
-#
-#}
+variable "fstream_label" {
+  description = "fstream label context"
+  default     = "fstream"
+
+}
 #variable "fstream_s3_bucket" {
 #  description = "Bucket for storing the sent messages through sqs"
 #  default     = "fstream-api-data-bucket"
@@ -224,10 +224,10 @@ variable "tag_KST" {
 ########################################################################################################################
 ####  fasttrack monitoring variables
 #########################################################################################################################
-#variable "fasttrack_monitoring_label" {
-#  description = "fasttrack monitoring label context"
-#  default     = "fasttrack-monitoring"
-#}
+variable "fasttrack_monitoring_label" {
+  description = "fasttrack monitoring label context"
+  default     = "fasttrack-monitoring"
+}
 #
 #
 #
@@ -239,4 +239,3 @@ variable "tag_KST" {
 #    prd : "arn:aws:sns:eu-west-1:683778616801:PrepareProductionStack-MessageRouterTopic6FDF6F03-LMH1Y9604T9K",
 #  }
 #}
-

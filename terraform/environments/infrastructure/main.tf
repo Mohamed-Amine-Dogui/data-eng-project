@@ -4,9 +4,9 @@
 terraform {
   required_version = "= 0.14.8"
   backend "s3" {
-    bucket         = "data-eng-terraform-backend"
-    key            = "statefile.tfstate"
-    region         = "eu-west-1"
+    bucket = "data-eng-terraform-backend"
+    key    = "statefile.tfstate"
+    region = "eu-west-1"
   }
 
   required_providers {
@@ -78,35 +78,35 @@ locals {
   access_arns           = compact(concat(!local.in_production ? [data.aws_iam_role.PA_DEVELOPER.arn, data.aws_iam_role.PA_CAP_demo_DEVELOPER.arn] : [], [data.aws_caller_identity.current.arn]))
 }
 
+#########################################################################################################################
+####  Remote state retrieval cap-consumer-ap
+#########################################################################################################################
+#data "terraform_remote_state" "cap_default" {
+#  backend   = "s3"
+#  workspace = "default"
+#  config = {
+#    // var.stage must be in ["prd", "int", "dev"]
+#    bucket = "cap-${var.stage}-terraform-backend"
+#    key    = "analytics-vpc-${var.aws_region}/cap/cap.tfstate"
+#    region = var.aws_region
+#  }
+#  defaults = {}
+#}
+#
 ########################################################################################################################
-###  Remote state retrieval cap-consumer-ap
+###  Remote state retrieval vwd
 ########################################################################################################################
-data "terraform_remote_state" "cap_default" {
-  backend   = "s3"
-  workspace = "default"
-  config = {
-    // var.stage must be in ["prd", "int", "dev"]
-    bucket = "cap-${var.stage}-terraform-backend"
-    key    = "analytics-vpc-${var.aws_region}/cap/cap.tfstate"
-    region = var.aws_region
-  }
-  defaults = {}
-}
-
-#######################################################################################################################
-##  Remote state retrieval vwd
-#######################################################################################################################
-data "terraform_remote_state" "vwd_default_infrastructure" {
-  backend = "s3"
-  //  comment out if working on base resources that need to be in the feature
-  //  workspace/branch.
-  workspace = "default"
-  config = {
-    bucket = "vwd-dp-${var.stage}-terraform-backend"
-    key    = "analytics-vpc-${var.aws_region}/infrastructure/infrastructure.tfstate"
-    region = var.aws_region
-  }
-}
+#data "terraform_remote_state" "vwd_default_infrastructure" {
+#  backend = "s3"
+#  //  comment out if working on base resources that need to be in the feature
+#  //  workspace/branch.
+#  workspace = "default"
+#  config = {
+#    bucket = "vwd-dp-${var.stage}-terraform-backend"
+#    key    = "analytics-vpc-${var.aws_region}/infrastructure/infrastructure.tfstate"
+#    region = var.aws_region
+#  }
+#}
 
 ########################################################################################################################
 ###  Convenience data retrieval
@@ -117,7 +117,7 @@ data "aws_caller_identity" "current" {}
 ###  generic resources Labels
 ########################################################################################################################
 module "generic_labels" {
-  source         = "git::ssh://cap-tf-module-label/vwdfive/cap-tf-module-label?ref=tags/0.3.0"
+  source         = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
   git_repository = var.git_repository
   project        = var.project
   stage          = var.stage
@@ -141,7 +141,7 @@ module "generic_labels" {
 ###  fsag Labels
 ########################################################################################################################
 module "fsag_labels" {
-  source = "git::ssh://cap-tf-module-label/vwdfive/cap-tf-module-label?ref=tags/0.3.0"
+  source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
 
   project        = var.project
   stage          = var.stage
@@ -173,7 +173,7 @@ module "fsag_labels" {
 ###  cc Labels
 ########################################################################################################################
 module "cc_labels" {
-  source = "git::ssh://cap-tf-module-label/vwdfive/cap-tf-module-label?ref=tags/0.3.0"
+  source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
 
   project        = var.project
   stage          = var.stage
@@ -203,7 +203,7 @@ module "cc_labels" {
 ###  fstream Labels
 ########################################################################################################################
 module "fstream_labels" {
-  source = "git::ssh://cap-tf-module-label/vwdfive/cap-tf-module-label?ref=tags/0.3.0"
+  source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
 
   project        = var.project
   stage          = var.stage
@@ -230,41 +230,12 @@ module "fstream_labels" {
   ]
 }
 
-########################################################################################################################
-###  campaign cockpit deletion lambda Labels
-########################################################################################################################
-module "cc_deletion_lambda_labels" {
-  source = "git::ssh://cap-tf-module-label/vwdfive/cap-tf-module-label?ref=tags/0.3.0"
-
-  project        = var.project
-  stage          = var.stage
-  name           = var.cc_deletion_lambda_label
-  layer          = var.stage
-  project_id     = var.project_id
-  kst            = var.tag_KST
-  wa_number      = var.wa_number
-  git_repository = var.git_repository
-
-  additional_tags = {
-    ApplicationID = "demo_onetom_okm_nsc"
-    ProjectID     = "demo"
-  }
-
-  resources = [
-    "policy",
-    "redshift-conn",
-    "lambda",
-    "grant",
-    "kms"
-  ]
-
-}
 
 ########################################################################################################################
 ###  fasttrack Monitoring Labels
 ########################################################################################################################
 module "fasttrack_monitoring_labels" {
-  source = "git::ssh://cap-tf-module-label/vwdfive/cap-tf-module-label?ref=tags/0.3.0"
+  source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-label.git?ref=tags/0.0.1"
 
   project        = var.project
   stage          = var.stage
@@ -290,21 +261,19 @@ module "fasttrack_monitoring_labels" {
 ########################################################################################################################
 ###  Redshift
 ########################################################################################################################
-data "aws_security_group" "cap_redshift" {
-  count = local.count_in_default
-  id    = data.terraform_remote_state.cap_default.outputs.cap_redshift_cluster_base_security_group_id
-}
-
-data "aws_redshift_cluster" "cap" {
-  cluster_identifier = data.terraform_remote_state.cap_default.outputs.cap_redshift_cluster_identifier
-}
-
-data "aws_subnet" "cap_redshift_single_subnet" {
-  id = split(",", data.terraform_remote_state.cap_default.outputs.cap_redshift_cluster_subnet_ids)[1]
-}
-
-data "aws_ssm_parameter" "redshift_lambda_user_pw" {
-  name = data.terraform_remote_state.cap_default.outputs.redshift_lambda_db_password_ssm_name
-}
-
-
+#data "aws_security_group" "cap_redshift" {
+#  count = local.count_in_default
+#  id    = data.terraform_remote_state.cap_default.outputs.cap_redshift_cluster_base_security_group_id
+#}
+#
+#data "aws_redshift_cluster" "cap" {
+#  cluster_identifier = data.terraform_remote_state.cap_default.outputs.cap_redshift_cluster_identifier
+#}
+#
+#data "aws_subnet" "cap_redshift_single_subnet" {
+#  id = split(",", data.terraform_remote_state.cap_default.outputs.cap_redshift_cluster_subnet_ids)[1]
+#}
+#
+#data "aws_ssm_parameter" "redshift_lambda_user_pw" {
+#  name = data.terraform_remote_state.cap_default.outputs.redshift_lambda_db_password_ssm_name
+#}

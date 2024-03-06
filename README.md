@@ -88,11 +88,11 @@ Main steps and responsibilities needed to take in order to reuse this template f
 
 1. Adjust template code
 
-   - set terraform variables `/terraform/environments/infrastructure/variables.tf`, especially `project`, `wa_number`, `project_id`, `tag_KST`. 
-   - In all files under `.github/workflows/*.yaml`, configure these to the proper value 
+   - set terraform variables `/terraform/environments/infrastructure/variables.tf`, especially `project`, `wa_number`, `project_id`, `tag_KST`.
+   - In all files under `.github/workflows/*.yaml`, configure these to the proper value
     ```yaml
     env:
-      
+
       ECR_REPOSITORY: 'dst-model-serve'
       DEPLOY_PROJECT: 'dst'
       TF_BUCKET_BASE_NAME: 'terraform-backend'
