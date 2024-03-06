@@ -30,6 +30,8 @@ jobs:
         mask-aws-account-id: 'no'
     - name: Checkout This Repo
       uses: actions/checkout@v2
+      with:
+        ssh-private-key: ${{ secrets.TF_MODULE_LABEL_KEY }}
 
 
   lint:
