@@ -21,30 +21,16 @@ jobs:
     name: Calculate Key Run Parameters
     runs-on: ubuntu-latest
     steps:
-    - id: repo-name
-      name: Repository Name without organization
-      run: |
-        repo=${GITHUB_REPOSITORY#*/}
-        echo "::set-output name=out::$repo"
-
     - name: Configure AWS Credentials
-      id: aws-creds
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
         mask-aws-account-id: 'no'
-
     - name: Checkout This Repo
       uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
 
-    outputs:
-      basic-model-service-deploy-tag: basic-${{ steps.model-service-deploy-tag.outputs.out }}
-      repo-name: ${{ steps.repo-name.outputs.out }}
-      skip-jobs: ${{ steps.conditional-job-check.outputs.skip-jobs }}
 
   lint:
     name: Lint Project
@@ -197,7 +183,6 @@ jobs:
 
     - name: Checkout This Repo
       uses: actions/checkout@v2
-
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
