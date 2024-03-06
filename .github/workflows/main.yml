@@ -34,12 +34,12 @@ jobs:
 
     - name: Set up SSH agent
       run: |
-        mkdir -p $HOME/.ssh/
-        ssh-keyscan -t rsa github.com >> $HOME/.ssh/known_hosts
-        echo "${{ secrets.TF_MODULE_LABEL_KEY }}" > $HOME/.ssh/id_rsa
-        chmod 600 $HOME/.ssh/id_rsa
+        mkdir -p ${{ github.workspace }}/.ssh/
+        echo "${{ secrets.TF_MODULE_LABEL_KEY }}" > ${{ github.workspace }}/.ssh/id_rsa
+        chmod 600 ${{ github.workspace }}/.ssh/id_rsa
+        ssh-keyscan -t rsa github.com >> ${{ github.workspace }}/.ssh/known_hosts
         eval "$(ssh-agent -s)"
-        ssh-add $HOME/.ssh/id_rsa
+        ssh-add ${{ github.workspace }}/.ssh/id_rsa
 
   lint:
     name: Lint Project
