@@ -28,19 +28,18 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
         mask-aws-account-id: 'no'
+
     - name: Checkout This Repo
       uses: actions/checkout@v2
-      with:
-        ssh-private-key: ${{ secrets.TF_MODULE_LABEL_KEY }}
 
     - name: Set up SSH agent
       run: |
-        mkdir -p ~/.ssh/
-        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-        echo "${{ secrets.TF_MODULE_LABEL_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        eval $(ssh-agent -s)
-        ssh-add ~/.ssh/id_rsa
+        mkdir -p $HOME/.ssh/
+        ssh-keyscan -t rsa github.com >> $HOME/.ssh/known_hosts
+        echo "${{ secrets.TF_MODULE_LABEL_KEY }}" > $HOME/.ssh/id_rsa
+        chmod 600 $HOME/.ssh/id_rsa
+        eval "$(ssh-agent -s)"
+        ssh-add $HOME/.ssh/id_rsa
 
   lint:
     name: Lint Project
@@ -191,8 +190,6 @@ jobs:
       with:
         terraform_version: ${{ env.TF_VERSION }}
 
-    - name: Checkout This Repo
-      uses: actions/checkout@v2
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
