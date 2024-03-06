@@ -1,0 +1,98 @@
+---
+#
+# This docker-compose file can be used to define all containers used in the
+# the project for:
+#   1) build containers that need to be exported;
+#   2) use ephemeral containers to run unit tests or integration tests;
+#   3) mock external services the model is dependant on (e.g. S3).
+#
+
+version: '3'
+
+services:
+
+  # This container is optional. It allows to mock AWS Services that can be
+  # run locally, making it possible to, e.g., use S3 for integration tests.
+  mock-aws:
+    image: localstack/localstack:1.2.0
+    ports:
+    - 4566:4566
+    hostname: mock-aws
+    environment:
+    - SERVICES=s3, redshift
+    - DOCKER_HOST=unix:///var/run/docker.sock
+    - DATA_DIR=${DATA_DIR- }
+    networks:
+      data-science:
+    volumes:
+    - ${TMPDIR:-/tmp/localstack}:/var/lib/localstack
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /private${TMPDIR:-/tmp/localstack}:/tmp/localstack
+
+  # Allows build and run the model service anywhere docker is running.
+  basic-model-service:
+    image: basic-model-service:local
+    build:
+      dockerfile: Dockerfile
+      context: model/basic
+    hostname: basic-model-service
+    networks:
+      data-science:
+    ports:
+    - 8080:80
+    depends_on:
+    - mock-aws
+
+  # Possibility to run integration from a container. Ensures runs on local
+  # machine have the same outcome as tests run on CICD Pipeline.
+  integration-test:
+    image: python:3.9
+    working_dir: /app/
+    volumes:
+    - .:/app/
+    networks:
+      data-science:
+    depends_on:
+    - basic-model-service
+    command:
+    - /bin/bash
+    - -c
+    - |
+      pip3 install -r tests/requirements.txt
+      pytest tests/integration --junitxml=test-results/junit/test-results.xml --model-endpoint http://basic-model-service:80
+
+  # Possibility to run unittests in a container. Ensures runs on local machine
+  # have the same outcome as tests run on CICD Pipeline.
+  unit-test:
+    # TODO: ensure you choose same Python version as your project is running
+    image: python:3.9-bullseye
+    working_dir: /app/
+    depends_on:
+    - mock-aws
+    environment:
+      # ensure contents of this dir are available for import during test
+      PYTHONPATH: /app/model/basic/src:/app/service/etl/lambdas/production_tracker_redshift_deletion/:$$PYTHONPATH
+      LOCALSTACK_HOSTNAME: mock-aws
+      LOCALSTACK_PORT: 4566
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: eu-west-1
+      PYSPARK_SUBMIT_ARGS: '--packages com.amazonaws:aws-java-sdk-pom:1.11.563,org.apache.hadoop:hadoop-aws:3.2.2,org.apache.hadoop:hadoop-client-api:3.2.2,org.apache.hadoop:hadoop-client-runtime:3.2.2
+        pyspark-shell'
+    networks:
+      data-science:
+    volumes:
+    - .:/app/
+    command:
+    - /bin/bash
+    - -c
+    - |
+      # provision aws glue libs locally (not available on pip)
+      make -f vwn.mk ./awsglue
+      # install java because of pyspark
+      apt-get -qq update && apt-get -qq install openjdk-11-jdk -y
+      # install project reqs
+      pip3 install -r tests/requirements.txt -q
+      pytest -s --cov=service tests/unit/ --junitxml=test-results/junit/test-results.xml --cov-report=xml:test-results/coverage.xml --cov-report=html:test-results/cov_html
+networks:
+  data-science:

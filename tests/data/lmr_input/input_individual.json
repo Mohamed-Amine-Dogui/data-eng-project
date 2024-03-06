@@ -1,0 +1,4 @@
+[
+  {"IDKDeletionFlag__c": "true", "RCY_StopMarketing_VW__c": "true", "UUID__c": "dummy_UUID_a", "Id": "dummy_Id_a", "Brand__c": "dummy_Brand_a", "RCY_IndividualStatus__c": "dummy_RCY_IndividualStatus_a"},
+  {"IDKDeletionFlag__c": "false", "RCY_StopMarketing_VW__c": "false", "UUID__c": "dummy_UUID_b", "Id": "dummy_Id_b", "Brand__c": "dummy_Brand_b", "RCY_IndividualStatus__c": "dummy_RCY_IndividualStatus_b"}
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "Dealership__c": "dummy",
+    "SourceCampaign__c": "dummy",
+    "ListPrice__c": "dummy",
+    "CarModelPreferences__c": "dummy",
+    "TopicPreferences__c": "dummy",
+    "RecordType.Name": "Newsletter",
+    "PrivPolDateOfConsent__c": "dummy",
+    "Vehicle__c": "dummy",
+    "RCY_InterestType__c": "Newsletter",
+    "RecordType.DeveloperName": "RCY_Newsletter",
+    "VWID__c": "dummy",
+    "RecordTypeId": "0129E000000bg0DQAQ",
+    "Product__c": "dummy",
+    "ConvertedOpportunityId": "dummy",
+    "PrivPolDOIConfirmDate__c": "dummy",
+    "IndividualId": "0PK9E000000DheuWAC",
+    "Topic__c": "dummy",
+    "Status": "New",
+    "Provider__c": "dummy",
+    "PrivPolDOISentDate__c": "dummy",
+    "Brand__c": "Volkswagen",
+    "ModelName__c": "dummy",
+    "InitialLeadCreationDate__c": "dummy",
+    "LeadSource": "dummy",
+    "CarOfInterest__c": "dummy",
+    "Id": "00Q9E000007b7IcUAI"
+  }
+]

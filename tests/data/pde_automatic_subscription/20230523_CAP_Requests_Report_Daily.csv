@@ -1,0 +1,3 @@
+id,idkit_uuid,created_at,vin,commission_number,invited_by_dealership_id,country,brand,identity_check_enabled,primary_user_enabled,preferred_dealership_enabled,automatic_service_scheduling_enabled,invite_status
+78646,a8662a99-adfe-46cf-a043-0327211e2be3,2022-01-24 07:20:21,,111 4014382022,POL00270V,DE,,,,,,InvitationSent
+78650,1618513a-284f-45eb-8489-b3b72275af6d,2022-01-24 07:55:05,WVWZZZCDZMW501191,113 4014382022,DEU51268V,DE,,,,,,InvitationSent

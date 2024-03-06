@@ -1,0 +1,6 @@
+{
+    "name": "Codespaces Dependencies installation",
+
+    "postCreateCommand": "/bin/bash ./.devcontainer/setup.sh"
+
+}
