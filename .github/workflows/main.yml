@@ -14,7 +14,7 @@ env:
   DEPLOY_PROJECT: 'demo'
   TF_BUCKET_BASE_NAME: 'data-eng-terraform-backend'
   PYTHON_VERSION: '3.9'
-  TF_VERSION: '0.14.9'
+  TF_VERSION: '0.14.8'
   AWS_REGION: 'eu-west-1'
   CHECKOV_VERSION: '2.0.45'
   TERRAFORM_ROOT_DIR: 'terraform/environments'
@@ -204,6 +204,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+
     - name: Install VirtualEnv
       run: pip3 install virtualenv
 
