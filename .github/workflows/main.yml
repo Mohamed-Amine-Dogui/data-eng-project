@@ -16,7 +16,7 @@ env:
   PYTHON_VERSION: '3.9'
   TF_VERSION: '0.14.8'
   AWS_REGION: 'eu-west-1'
-  CHECKOV_VERSION: '3.2.32'
+  CHECKOV_VERSION: '2.0.45'
   TERRAFORM_ROOT_DIR: 'terraform/environments'
 
 jobs:
