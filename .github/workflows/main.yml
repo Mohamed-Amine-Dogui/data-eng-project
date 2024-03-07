@@ -229,7 +229,7 @@ jobs:
         name: terraform-initialized-dir
 
 
-    - name:  Terraform Init
+    - name: Terraform Init
       run: |
         cd terraform/environments/${{ matrix.tf-environment }}
         terraform init
