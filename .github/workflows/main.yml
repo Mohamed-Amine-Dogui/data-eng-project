@@ -32,9 +32,8 @@ jobs:
         aws-region: ${{ env.AWS_REGION }}
         mask-aws-account-id: 'no'
 
-    - name: Checkout This Repo
-      uses: actions/checkout@v2
-
+#    - name: Checkout This Repo
+#      uses: actions/checkout@v2
 
   lint:
     name: Lint Project
@@ -161,17 +160,6 @@ jobs:
         name: terraform-plan-${{ matrix.tf-environment }}
         path: terraform/environments/${{ matrix.tf-environment }}/tfplan
 
-#    - name: Upload .terraform directory as artifact
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: terraform-initialized-dir
-#        path: terraform/environments/${{ matrix.tf-environment }}/.terraform
-#
-#    - name: List contents of .terraform directory
-#      run: |
-#        echo "Listing contents of .terraform directory after upload:"
-#        cd terraform/environments/${{ matrix.tf-environment }}
-#        ls -alh .terraform
 
   tf-apply:
     name: TF Apply
@@ -222,12 +210,6 @@ jobs:
       with:
         name: terraform-plan-${{ matrix.tf-environment }}
         path: ${{ github.workspace }}/terraform-plan
-
-#    - name: Download Terraform initialized directory
-#      uses: actions/download-artifact@v2
-#      with:
-#        name: terraform-initialized-dir
-
 
     - name: Terraform Init
       run: |
