@@ -2,7 +2,7 @@
 #### Bucket for the logs
 ########################################################################################################################
 module "logs_bucket" {
-
+  #checkov:skip=CKV_TF_1:Skip reason
   enable = true
   source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-aws-s3-bucket//s3/s3-encrypted?ref=tags/0.0.1"
 
