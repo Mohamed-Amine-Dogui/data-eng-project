@@ -34,15 +34,17 @@ jobs:
 
     - name: Set up SSH agent
       run: |
-        mkdir -p ${{ github.workspace }}/.ssh/
-        echo "${{ secrets.TF_MODULE_LABEL_KEY }}" > ${{ github.workspace }}/.ssh/id_rsa
-        chmod 600 ${{ github.workspace }}/.ssh/id_rsa
-        ssh-keyscan -t rsa github.com >> ${{ github.workspace }}/.ssh/known_hosts
+        mkdir -p ~/.ssh/
+        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+        echo "${{ secrets.TF_MODULE_LABEL_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
         eval "$(ssh-agent -s)"
-        ssh-add ${{ github.workspace }}/.ssh/id_rsa
+        ssh-add ~/.ssh/id_rsa
 
-#    - name: Test SSH connection
-#      run: ssh -Tvv git@github.com
+      # Test the SSH connection to confirm it's working
+    - name: Test SSH connection
+      run: ssh -Tvv git@github.com
+
   lint:
     name: Lint Project
     runs-on: ubuntu-latest
