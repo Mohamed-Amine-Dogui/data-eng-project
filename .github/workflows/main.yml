@@ -57,7 +57,6 @@ jobs:
   #    # Test the SSH connection to confirm it's working
 #    - name: Test SSH connection
 #      run: ssh -Tvv git@github.com
-
   lint:
     name: Lint Project
     runs-on: ubuntu-latest
