@@ -49,83 +49,83 @@ jobs:
         ssh-add $HOME/.ssh/id_rsa
         echo -e "Host github.com\n\tStrictHostKeyChecking no\n\tIdentityFile $HOME/.ssh/id_rsa" > $HOME/.ssh/config
 
-#  lint:
-#    name: Lint Project
-#    runs-on: ubuntu-latest
-#    needs: [run-params]
-#    env:
-#      SKIP: terraform_validate
-#    steps:
-#    - name: Checkout This Repo
-#      uses: actions/checkout@v2
-#
-#    - name: Setup Python
-#      uses: actions/setup-python@v2
-#      with:
-#        python-version: ${{ env.PYTHON_VERSION }}
-#
-#    - name: Setup Terraform
-#      uses: hashicorp/setup-terraform@v1.2.1
-#      with:
-#        terraform_version: ${{ env.TF_VERSION }}
-#    - name: Pre-Commit
-#      uses: pre-commit/action@v2.0.0
-#
-#  checkov:
-#    name: Configuration Checks (checkov)
-#    runs-on: ubuntu-latest
-#    needs: [run-params]
-#    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        tf-environment: ["infrastructure"]
-#    steps:
-#    - name: Checkout This Repo
-#      uses: actions/checkout@v2
-#    - name: Run Checkov
-#      run: |
-#        docker container run \
-#          -t \
-#          -v ${{ github.workspace }}/${{ env.TERRAFORM_ROOT_DIR }}:/tf bridgecrew/checkov:${{ env.CHECKOV_VERSION }} \
-#          -d /tf/${{matrix.tf-environment}} \
-#          --quiet
-#
-#  unit-test:
-#    name: ETL/Model Unit Tests
-#    runs-on: ubuntu-latest
-#    needs: [run-params]
-#    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
-#    steps:
-#    - name: Checkout This Repo
-#      uses: actions/checkout@v2
-#    - name: Run Tests
-#      run: docker-compose up --exit-code-from unit-test --build unit-test
-#    - name: Show/Publish Unit Test Results
-#      uses: EnricoMi/publish-unit-test-result-action@v1.7
-#      if: always()
-#      with:
-#        github_token: ${{ secrets.GITHUB_TOKEN }}
-#        files: test-results/**/test-*.xml
-#        comment_on_pr: false
-#
-#  integration-test:
-#    name: Model Service Integration Tests
-#    runs-on: ubuntu-latest
-#    needs: [run-params]
-#    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
-#    steps:
-#    - name: Checkout This Repo
-#      uses: actions/checkout@v2
-#    - name: Run Tests
-#      run: docker-compose up --exit-code-from integration-test --build integration-test
-#    - name: Show/Publish Integratin Test Results
-#      uses: EnricoMi/publish-unit-test-result-action@v1.7
-#      if: always()
-#      with:
-#        github_token: ${{ secrets.GITHUB_TOKEN }}
-#        files: test-results/**/test-*.xml
-#        comment_on_pr: false
+  lint:
+    name: Lint Project
+    runs-on: ubuntu-latest
+    needs: [run-params]
+    env:
+      SKIP: terraform_validate
+    steps:
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1.2.1
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+    - name: Pre-Commit
+      uses: pre-commit/action@v2.0.0
+
+  checkov:
+    name: Configuration Checks (checkov)
+    runs-on: ubuntu-latest
+    needs: [run-params]
+    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        tf-environment: ["infrastructure"]
+    steps:
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+    - name: Run Checkov
+      run: |
+        docker container run \
+          -t \
+          -v ${{ github.workspace }}/${{ env.TERRAFORM_ROOT_DIR }}:/tf bridgecrew/checkov:${{ env.CHECKOV_VERSION }} \
+          -d /tf/${{matrix.tf-environment}} \
+          --quiet
+
+  unit-test:
+    name: ETL/Model Unit Tests
+    runs-on: ubuntu-latest
+    needs: [run-params]
+    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
+    steps:
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+    - name: Run Tests
+      run: docker-compose up --exit-code-from unit-test --build unit-test
+    - name: Show/Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1.7
+      if: always()
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        files: test-results/**/test-*.xml
+        comment_on_pr: false
+
+  integration-test:
+    name: Model Service Integration Tests
+    runs-on: ubuntu-latest
+    needs: [run-params]
+    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
+    steps:
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+    - name: Run Tests
+      run: docker-compose up --exit-code-from integration-test --build integration-test
+    - name: Show/Publish Integratin Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1.7
+      if: always()
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        files: test-results/**/test-*.xml
+        comment_on_pr: false
 
   tf-plan:
     name: TF Plan for DEV
