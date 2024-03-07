@@ -144,7 +144,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
-    - name: Terraform Init and Plan with SSH Wrapper
+    - name: Terraform Init and Plan with SSH
       run: |
         export GIT_SSH_COMMAND="ssh -v -i $HOME/.ssh/id_rsa -o StrictHostKeyChecking=no"
         cd terraform/environments/${{ matrix.tf-environment }}
@@ -161,21 +161,16 @@ jobs:
         name: terraform-plan-${{ matrix.tf-environment }}
         path: terraform/environments/${{ matrix.tf-environment }}/tfplan
 
-
-    - name: List contents of .terraform directory
-      run: |
-        echo "Listing contents of .terraform directory before upload:"
-        ls -alh .terraform
-
     - name: Upload .terraform directory as artifact
       uses: actions/upload-artifact@v2
       with:
         name: terraform-initialized-dir
-        path: .terraform
+        path: terraform/environments/${{ matrix.tf-environment }}/.terraform
 
     - name: List contents of .terraform directory
       run: |
         echo "Listing contents of .terraform directory after upload:"
+        cd terraform/environments/${{ matrix.tf-environment }}
         ls -alh .terraform
 
   tf-apply:
