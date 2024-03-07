@@ -228,6 +228,13 @@ jobs:
       with:
         name: terraform-initialized-dir
 
+
+    - name: Debug Terraform Initialization
+      run: |
+        cd terraform/environments/${{ matrix.tf-environment }}
+        export TF_LOG=DEBUG
+        terraform init
+
     - name: TF Apply
       if: always()
       run: |
