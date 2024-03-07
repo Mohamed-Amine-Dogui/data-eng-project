@@ -7,6 +7,9 @@ on:
     - master
     - main
 
+permissions:
+  contents: read
+
 env:
   DEPLOY_PROJECT: 'demo'
   TF_BUCKET_BASE_NAME: 'data-eng-terraform-backend'
@@ -40,6 +43,10 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         eval "$(ssh-agent -s)"
         ssh-add ~/.ssh/id_rsa
+
+    # Test the SSH connection to confirm it's working
+    - name: Test SSH connection
+      run: ssh -Tvv git@github.com
 
   lint:
     name: Lint Project
