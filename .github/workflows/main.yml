@@ -112,7 +112,7 @@ jobs:
 #        comment_on_pr: false
 
   tf-plan:
-    name: TF Plan for DEV
+    name: TF Plan
     runs-on: ubuntu-latest
     needs: [run-params]
     strategy:
@@ -161,8 +161,14 @@ jobs:
         name: terraform-plan-${{ matrix.tf-environment }}
         path: terraform/environments/${{ matrix.tf-environment }}/tfplan
 
-  tf-apply-dev:
-    name: DEV TF Apply
+    - name: Upload .terraform directory as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: terraform-initialized-dir
+        path: .terraform
+
+  tf-apply:
+    name: TF Apply
     runs-on: ubuntu-latest
     #needs: [run-params, lint, checkov, unit-test, integration-test, tf-plan]
     needs: [run-params, lint, checkov, tf-plan]
@@ -210,6 +216,11 @@ jobs:
       with:
         name: terraform-plan-${{ matrix.tf-environment }}
         path: ${{ github.workspace }}/terraform-plan
+
+    - name: Download Terraform initialized directory
+      uses: actions/download-artifact@v2
+      with:
+        name: terraform-initialized-dir
 
     - name: TF Apply
       if: always()
