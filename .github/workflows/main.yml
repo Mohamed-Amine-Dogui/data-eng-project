@@ -35,26 +35,6 @@ jobs:
     - name: Checkout This Repo
       uses: actions/checkout@v2
 
-    - name: Create SSH directory
-      run: |
-        mkdir -p $HOME/.ssh/
-        chmod 700 $HOME/.ssh/
-
-    - name: Set up SSH agent
-      run: |
-        ssh-keyscan -t rsa github.com >> $HOME/.ssh/known_hosts
-        echo "${{ secrets.TF_MODULE_LABEL_KEY }}" > $HOME/.ssh/id_rsa
-        chmod 600 $HOME/.ssh/id_rsa
-        eval "$(ssh-agent -s)"
-        ssh-add $HOME/.ssh/id_rsa
-        echo -e "Host github.com\n\tStrictHostKeyChecking no\n\tIdentityFile $HOME/.ssh/id_rsa" > $HOME/.ssh/config
-
-    - name: Print HOME directory and contents
-      run: |
-        echo "HOME directory is $HOME"
-        ls -la $HOME
-        ls -la $HOME/.ssh/
-
 
   lint:
     name: Lint Project
@@ -169,7 +149,6 @@ jobs:
 
     - name: Terraform Init and Plan with SSH Wrapper
       run: |
-        export TF_LOG=DEBUG
         export GIT_SSH_COMMAND="ssh -v -i $HOME/.ssh/id_rsa -o StrictHostKeyChecking=no"
         cd terraform/environments/${{ matrix.tf-environment }}
         terraform init -backend-config="bucket=${{ env.TF_BUCKET_BASE_NAME }}" -backend-config="key=statefile.tfstate" -backend-config="region=${{ env.AWS_REGION }}"

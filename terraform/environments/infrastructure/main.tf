@@ -39,28 +39,7 @@ provider "aws" {
   }
 }
 
-########################################################################################################################
-###  data Human Roles
-########################################################################################################################
-data "aws_iam_role" "PA_DEVELOPER" {
-  name = "PA_DEVELOPER"
-}
 
-data "aws_iam_role" "PA_LIMITEDDEV" {
-  name = "PA_LIMITEDDEV"
-}
-
-data "aws_iam_role" "PA_CAS_demo_DATA_SCIENTIST" {
-  name = "PA_CAS_demo_DATA_SCIENTIST"
-}
-
-data "aws_iam_role" "PA_CAP_demo_DATA_SCIENTIST" {
-  name = "PA_CAP_demo_DATA_SCIENTIST"
-}
-
-data "aws_iam_role" "PA_CAP_demo_DEVELOPER" {
-  name = "PA_CAP_demo_DEVELOPER"
-}
 
 ########################################################################################################################
 ###  Convenient locals
@@ -75,7 +54,7 @@ locals {
   workspace_arn_prefix  = terraform.workspace != "default" && var.stage == "dev" ? "*" : ""
   project_stage_pattern = "${local.workspace_arn_prefix}${var.project}-${var.stage}*"
   account_id            = data.aws_caller_identity.current.account_id
-  access_arns           = compact(concat(!local.in_production ? [data.aws_iam_role.PA_DEVELOPER.arn, data.aws_iam_role.PA_CAP_demo_DEVELOPER.arn] : [], [data.aws_caller_identity.current.arn]))
+  access_arns           = [data.aws_caller_identity.current.arn]
 }
 
 #########################################################################################################################
