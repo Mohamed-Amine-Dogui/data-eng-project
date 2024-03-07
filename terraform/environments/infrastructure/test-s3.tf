@@ -21,9 +21,78 @@
 #  wa_number                         = var.wa_number
 #  git_repository                    = var.git_repository
 #
+#  attach_custom_bucket_policy = true
+#  policy                      = data.aws_iam_policy_document.log_bucket_policy_document.json
+#  kms_policy_to_attach        = data.aws_iam_policy_document.test_kms_key_policy.json
 #}
 #
-###########################################################################################################################
+#
+#########################################################################################################################
+####  Log Bucket Policy
+#########################################################################################################################
+#
+#data "aws_iam_policy_document" "log_bucket_policy_document" {
+#
+#  statement {
+#    sid    = "EnforceSSLFSAGBucket"
+#    effect = "Deny"
+#
+#    actions = ["s3:*"]
+#
+#
+#    principals {
+#      type        = "AWS"
+#      identifiers = ["*"]
+#    }
+#
+#    condition {
+#      test     = "Bool"
+#      variable = "aws:SecureTransport"
+#      values   = ["false"]
+#    }
+#
+#    resources = ["${module.logs_bucket.s3_arn}/*"]
+#  }
+#
+#
+#  statement {
+#    sid    = "AllwOnlyThisArns"
+#    effect = "Allow"
+#
+#    actions = ["s3:*"]
+#
+#    principals {
+#      type = "AWS"
+#      identifiers = [
+#        "arn:aws:iam::${local.account_id}:root"
+#      ]
+#    }
+#
+#    condition {
+#      test = "ArnLike"
+#      values = concat(local.access_arns,
+#        !local.in_production ? [data.aws_caller_identity.current.arn] : [],
+#        [
+#          data.aws_caller_identity.current.arn
+#      ])
+#      variable = "aws:PrincipalArn"
+#    }
+#    resources = [
+#      "${module.logs_bucket.s3_arn}/*",
+#      module.logs_bucket.s3_arn
+#    ]
+#  }
+#}
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#########################################################################################################################
 ####   Bucket for Lambda deployment
 #########################################################################################################################
 #module "source_code_bucket" {

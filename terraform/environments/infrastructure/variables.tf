@@ -101,10 +101,7 @@ variable "tag_KST" {
 #  type        = string
 #}
 #
-#variable "default_lambda_handler" {
-#  description = "The name of the function handler inside the fsag lambda main file"
-#  default     = "lambda_handler"
-#}
+
 #
 #variable "fsag_account_bucket_name" {
 #  description = "s3 bucket name in the fsag account"
@@ -239,3 +236,9 @@ variable "fasttrack_monitoring_label" {
 #    prd : "arn:aws:sns:eu-west-1:683778616801:PrepareProductionStack-MessageRouterTopic6FDF6F03-LMH1Y9604T9K",
 #  }
 #}
+
+
+variable "default_lambda_handler" {
+  description = "The name of the function handler inside main.py file"
+  default     = "lambda_handler"
+}
