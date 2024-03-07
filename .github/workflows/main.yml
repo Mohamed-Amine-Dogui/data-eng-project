@@ -153,6 +153,7 @@ jobs:
 
     - name: Initialize and Plan Terraform
       run: |
+        export TF_LOG=DEBUG
         cd terraform/environments/${{ matrix.tf-environment }}
         terraform init -backend-config="bucket=${{ env.TF_BUCKET_BASE_NAME }}" -backend-config="key=statefile.tfstate" -backend-config="region=${{ env.AWS_REGION }}"
         terraform plan -out=tfplan
