@@ -167,7 +167,7 @@ jobs:
       run: |
         ls -la $HOME/.ssh/
         cat $HOME/.ssh/id_rsa
-        ssh-add -L       
+        ssh-add -L
 
     - name: Terraform Init and Plan with SSH Wrapper
       run: |
