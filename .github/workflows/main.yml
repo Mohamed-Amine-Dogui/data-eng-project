@@ -176,6 +176,15 @@ jobs:
           secret_access_key: 'AWS_SECRET_ACCESS_KEY'
         tf-environment: ['infrastructure']
     steps:
+
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+
+    - name: Setup SSH Agent
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.TF_MODULE_LABEL_KEY }}
+
     - name: Setup Python
       uses: actions/setup-python@v2
       with:
