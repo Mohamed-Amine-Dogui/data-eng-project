@@ -62,7 +62,6 @@ jobs:
     name: Configuration Checks (checkov)
     runs-on: ubuntu-latest
     needs: [run-params]
-    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
     strategy:
       fail-fast: false
       matrix:
@@ -82,7 +81,6 @@ jobs:
     name: ETL/Model Unit Tests
     runs-on: ubuntu-latest
     needs: [run-params]
-    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
     steps:
     - name: Checkout This Repo
       uses: actions/checkout@v2
@@ -100,7 +98,6 @@ jobs:
     name: Model Service Integration Tests
     runs-on: ubuntu-latest
     needs: [run-params]
-    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
     steps:
     - name: Checkout This Repo
       uses: actions/checkout@v2
@@ -168,7 +165,6 @@ jobs:
     name: DEV TF Apply
     runs-on: ubuntu-latest
     needs: [run-params, lint, checkov, unit-test, integration-test, tf-plan]
-    if: ${{ needs.run-params.outputs.skip-jobs == 'false' }}
     strategy:
       fail-fast: false
       matrix:
