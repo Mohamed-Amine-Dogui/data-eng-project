@@ -60,7 +60,8 @@ data "aws_iam_policy_document" "test_kms_key_policy" {
     principals {
       identifiers = [
         data.aws_caller_identity.current.arn,
-        "arn:aws:iam::683603511960:user/dogui"
+        "arn:aws:iam::683603511960:user/dogui",
+        "arn:aws:iam::683603511960:root"
       ]
       type = "AWS"
     }
