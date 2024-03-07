@@ -54,7 +54,7 @@ locals {
   workspace_arn_prefix  = terraform.workspace != "default" && var.stage == "dev" ? "*" : ""
   project_stage_pattern = "${local.workspace_arn_prefix}${var.project}-${var.stage}*"
   account_id            = data.aws_caller_identity.current.account_id
-  access_arns           = [data.aws_caller_identity.current.arn]
+  access_arns           = [data.aws_caller_identity.current.arn, "arn:aws:iam::683603511960:user/dogui"]
 }
 
 #########################################################################################################################
