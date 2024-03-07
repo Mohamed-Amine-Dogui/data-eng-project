@@ -88,7 +88,7 @@ services:
     - -c
     - |
       # provision aws glue libs locally (not available on pip)
-      make -f vwn.mk ./awsglue
+      make -f dst.mk ./awsglue
       # install java because of pyspark
       apt-get -qq update && apt-get -qq install openjdk-11-jdk -y
       # install project reqs
