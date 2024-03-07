@@ -223,10 +223,10 @@ jobs:
         name: terraform-plan-${{ matrix.tf-environment }}
         path: ${{ github.workspace }}/terraform-plan
 
-    - name: Download Terraform initialized directory
-      uses: actions/download-artifact@v2
-      with:
-        name: terraform-initialized-dir
+#    - name: Download Terraform initialized directory
+#      uses: actions/download-artifact@v2
+#      with:
+#        name: terraform-initialized-dir
 
 
     - name: Terraform Init
