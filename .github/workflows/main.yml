@@ -229,10 +229,9 @@ jobs:
         name: terraform-initialized-dir
 
 
-    - name: Debug Terraform Initialization
+    - name:  Terraform Init
       run: |
         cd terraform/environments/${{ matrix.tf-environment }}
-        export TF_LOG=DEBUG
         terraform init
 
     - name: TF Apply
