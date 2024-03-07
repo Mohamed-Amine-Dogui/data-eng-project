@@ -35,6 +35,15 @@ jobs:
     - name: Checkout This Repo
       uses: actions/checkout@v2
 
+#    - name: Set up SSH agent
+#      run: |
+#        mkdir -p ~/.ssh/
+#        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+#        echo "${{ secrets.TF_MODULE_LABEL_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+#        chmod 600 ~/.ssh/id_rsa
+#        eval "$(ssh-agent -s)"
+#        ssh-add ~/.ssh/id_rsa
+
     - name: Set up SSH agent
       run: |
         mkdir -p ~/.ssh/
@@ -43,10 +52,11 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         eval "$(ssh-agent -s)"
         ssh-add ~/.ssh/id_rsa
+        echo "Host github.com\n\tStrictHostKeyChecking no\n\tIdentityFile ~/.ssh/id_rsa\n" > ~/.ssh/config
 
-    # Test the SSH connection to confirm it's working
-    - name: Test SSH connection
-      run: ssh -Tvv git@github.com
+  #    # Test the SSH connection to confirm it's working
+#    - name: Test SSH connection
+#      run: ssh -Tvv git@github.com
 
   lint:
     name: Lint Project
@@ -154,9 +164,11 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
-    - name: Initialize and Plan Terraform
+
+    - name: Terraform Init and Plan with SSH Wrapper
       run: |
         export TF_LOG=DEBUG
+        export GIT_SSH_COMMAND="ssh -v -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no"
         cd terraform/environments/${{ matrix.tf-environment }}
         terraform init -backend-config="bucket=${{ env.TF_BUCKET_BASE_NAME }}" -backend-config="key=statefile.tfstate" -backend-config="region=${{ env.AWS_REGION }}"
         terraform plan -out=tfplan
@@ -164,6 +176,17 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
+
+#    - name: Initialize and Plan Terraform
+#      run: |
+#        export TF_LOG=DEBUG
+#        cd terraform/environments/${{ matrix.tf-environment }}
+#        terraform init -backend-config="bucket=${{ env.TF_BUCKET_BASE_NAME }}" -backend-config="key=statefile.tfstate" -backend-config="region=${{ env.AWS_REGION }}"
+#        terraform plan -out=tfplan
+#      env:
+#        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+#        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#        AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
 
     - name: Upload Terraform Plan as Artifact
       uses: actions/upload-artifact@v2
