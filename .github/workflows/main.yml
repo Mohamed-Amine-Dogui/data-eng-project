@@ -42,8 +42,8 @@ jobs:
         ssh-add ~/.ssh/id_rsa
 
       # Test the SSH connection to confirm it's working
-    - name: Test SSH connection
-      run: ssh -Tvv git@github.com
+#    - name: Test SSH connection
+#      run: ssh -Tvv git@github.com
 
   lint:
     name: Lint Project
