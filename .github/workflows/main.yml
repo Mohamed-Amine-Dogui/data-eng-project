@@ -32,8 +32,8 @@ jobs:
         aws-region: ${{ env.AWS_REGION }}
         mask-aws-account-id: 'no'
 
-#    - name: Checkout This Repo
-#      uses: actions/checkout@v2
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
 
   lint:
     name: Lint Project
