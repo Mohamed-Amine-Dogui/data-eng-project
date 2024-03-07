@@ -37,23 +37,23 @@ module "logs_bucket" {
 #}
 
 
-###########################################################################################################################
-####   Bucket for Lambda deployment
-#########################################################################################################################
-#module "source_code_bucket" {
-#  source = "git::ssh://cap-tf-module-aws-s3-bucket/vwdfive/cap-tf-module-aws-s3-bucket//s3/s3-logging-encrypted?ref=tags/0.5.0"
-#
-#  enable                        = true
-#  environment                   = var.stage
-#  project                       = var.project
-#  s3_bucket_name                = "my-test-new-bucket"
-#  s3_bucket_acl                 = "private"
-#  target_bucket_id              = module.logs_bucket.s3_bucket
-#  versioning_enabled            = true
-#  enforce_SSL_encryption_policy = true
-#  force_destroy                 = local.in_development
-#  kst                           = var.tag_KST
-#  wa_number                     = var.wa_number
-#  git_repository                = "github.com/Mohamed-Amine-Dogui/data-eng-project"
-#
-#}
+##########################################################################################################################
+###   Bucket for Lambda deployment
+########################################################################################################################
+module "source_code_bucket" {
+  source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-aws-s3-bucket//s3/s3-logging-encrypted?ref=tags/0.0.1"
+
+  enable                        = true
+  environment                   = var.stage
+  project                       = var.project
+  s3_bucket_name                = "my-test-source-code-bucket"
+  s3_bucket_acl                 = "private"
+  target_bucket_id              = module.logs_bucket.s3_bucket
+  versioning_enabled            = true
+  enforce_SSL_encryption_policy = true
+  force_destroy                 = local.in_development
+  kst                           = var.tag_KST
+  wa_number                     = var.wa_number
+  git_repository                = "github.com/Mohamed-Amine-Dogui/data-eng-project"
+
+}
