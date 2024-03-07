@@ -53,7 +53,8 @@ data "aws_iam_policy_document" "test_kms_key_policy" {
       "kms:DescribeKey",
       "kms:GetKeyPolicy",
       "kms:ListResourceTags",
-      "kms:GetKeyRotationStatus"
+      "kms:GetKeyRotationStatus",
+      "kms:Delete*"
     ]
     resources = ["*"]
     principals {
