@@ -1,2 +1,2 @@
 #!/bin/sh
-exec /usr/bin/ssh -i $HOME/.ssh/id_rsa "$@"
+exec /usr/bin/ssh -i /home/runner/.ssh/id_rsa "$@"

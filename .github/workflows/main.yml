@@ -49,6 +49,13 @@ jobs:
         ssh-add $HOME/.ssh/id_rsa
         echo -e "Host github.com\n\tStrictHostKeyChecking no\n\tIdentityFile $HOME/.ssh/id_rsa" > $HOME/.ssh/config
 
+    - name: Print HOME directory and contents
+      run: |
+        echo "HOME directory is $HOME"
+        ls -la $HOME
+        ls -la $HOME/.ssh/
+
+
   lint:
     name: Lint Project
     runs-on: ubuntu-latest
@@ -160,13 +167,13 @@ jobs:
       run: |
         ls -la $HOME/.ssh/
         cat $HOME/.ssh/id_rsa
-        ssh-add -L
+        ssh-add -L       
 
     - name: Terraform Init and Plan with SSH Wrapper
       run: |
         export TF_LOG=DEBUG
-        chmod +x ssh_wrapper.sh
-        export GIT_SSH_COMMAND="$PWD/ssh_wrapper.sh"
+        chmod +x /home/runner/work/_temp/ssh_wrapper.sh
+        export GIT_SSH_COMMAND="/home/runner/work/_temp/ssh_wrapper.sh"
         cd terraform/environments/${{ matrix.tf-environment }}
         terraform init -backend-config="bucket=${{ env.TF_BUCKET_BASE_NAME }}" -backend-config="key=statefile.tfstate" -backend-config="region=${{ env.AWS_REGION }}"
         terraform plan -out=tfplan
@@ -174,6 +181,7 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
+
 
 
     - name: Upload Terraform Plan as Artifact
