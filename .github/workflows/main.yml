@@ -163,6 +163,13 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
+
+    - name: Check SSH Key & Permissions
+      run: |
+        ls -la ~/.ssh/
+        cat ~/.ssh/id_rsa
+        ssh-add -L
+
     - name: Terraform Init and Plan with SSH Wrapper
       run: |
         export TF_LOG=DEBUG
