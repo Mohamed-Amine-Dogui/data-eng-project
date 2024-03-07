@@ -145,6 +145,11 @@ jobs:
     - name: Checkout This Repo
       uses: actions/checkout@v2
 
+    - name: Setup SSH Agent
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.TF_MODULE_LABEL_KEY }}
+
     - name: Setup Python
       uses: actions/setup-python@v2
       with:
@@ -162,39 +167,10 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
-
-    - name: Create SSH directory
-      run: |
-        mkdir -p $HOME/.ssh/
-        chmod 700 $HOME/.ssh/
-
-    - name: Set up SSH agent
-      run: |
-        ssh-keyscan -t rsa github.com >> $HOME/.ssh/known_hosts
-        echo "${{ secrets.TF_MODULE_LABEL_KEY }}" > $HOME/.ssh/id_rsa
-        chmod 600 $HOME/.ssh/id_rsa
-        eval "$(ssh-agent -s)"
-        ssh-add $HOME/.ssh/id_rsa
-        echo -e "Host github.com\n\tStrictHostKeyChecking no\n\tIdentityFile $HOME/.ssh/id_rsa" > $HOME/.ssh/config
-
-    - name: Print HOME directory and contents
-      run: |
-        echo "HOME directory is $HOME"
-        ls -la $HOME
-        ls -la $HOME/.ssh/
-
-
-    - name: Check SSH Key & Permissions
-      run: |
-        ls -la $HOME/.ssh/
-        cat $HOME/.ssh/id_rsa
-        ssh-add -L
-
     - name: Terraform Init and Plan with SSH Wrapper
       run: |
         export TF_LOG=DEBUG
-        chmod +x /home/runner/work/_temp/ssh_wrapper.sh
-        export GIT_SSH_COMMAND="/home/runner/work/_temp/ssh_wrapper.sh"
+        export GIT_SSH_COMMAND="ssh -v -i $HOME/.ssh/id_rsa -o StrictHostKeyChecking=no"
         cd terraform/environments/${{ matrix.tf-environment }}
         terraform init -backend-config="bucket=${{ env.TF_BUCKET_BASE_NAME }}" -backend-config="key=statefile.tfstate" -backend-config="region=${{ env.AWS_REGION }}"
         terraform plan -out=tfplan
@@ -202,8 +178,6 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
-
-
 
     - name: Upload Terraform Plan as Artifact
       uses: actions/upload-artifact@v2
