@@ -48,14 +48,37 @@ data "aws_iam_policy_document" "test_kms_key_policy" {
 
   #checkov:skip=CKV_AWS_111:Skip reason
   statement {
-    sid    = "Allow Describe KMS Key"
+    sid       = "Enable IAM User Permissions"
+    effect    = "Allow"
+    actions   = ["kms:*"]
+    resources = ["*"]
+    principals {
+      identifiers = [
+        data.aws_caller_identity.current.arn,
+        "arn:aws:iam::683603511960:user/dogui",
+        "arn:aws:iam::683603511960:root"
+      ]
+      type = "AWS"
+    }
+  }
+
+  statement {
+    sid    = "Allow administration of the key"
     effect = "Allow"
     actions = [
-      "kms:DescribeKey",
-      "kms:GetKeyPolicy",
-      "kms:ListResourceTags",
-      "kms:GetKeyRotationStatus",
-      "kms:Delete*"
+      "kms:Create*",
+      "kms:Describe*",
+      "kms:Enable*",
+      "kms:List*",
+      "kms:Put*",
+      "kms:Update*",
+      "kms:Revoke*",
+      "kms:Disable*",
+      "kms:Get*",
+      "kms:Delete*",
+      "kms:ScheduleKeyDeletion",
+      "kms:CancelKeyDeletion",
+      "kms:DeleteImportedKeyMaterial"
     ]
     resources = ["*"]
     principals {
