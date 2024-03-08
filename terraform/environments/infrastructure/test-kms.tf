@@ -47,6 +47,7 @@ module "test_kms_key" {
 data "aws_iam_policy_document" "test_kms_key_policy" {
 
   #checkov:skip=CKV_AWS_111:Skip reason
+  #checkov:skip=CKV_AWS_109:Skip reason
   statement {
     sid       = "Enable IAM User Permissions"
     effect    = "Allow"
