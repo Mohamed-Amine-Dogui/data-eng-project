@@ -242,9 +242,3 @@ variable "default_lambda_handler" {
   description = "The name of the function handler inside main.py file"
   default     = "lambda_handler"
 }
-
-variable "layer_rebuild_trigger" {
-  description = "Trigger to rebuild lambda layer"
-  type        = string
-  default     = "1"
-}

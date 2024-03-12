@@ -115,7 +115,7 @@ module "generic_labels" {
     "notebook_user_pw",
     "my-test-new-bucket",
     "grant",
-    "layer"
+    "glue-job"
   ]
 }
 
@@ -177,7 +177,7 @@ module "cc_labels" {
     "takeout-glue-job",
     "redshift-conn",
     "dlq-sns-topic",
-    "takeout-redshift-connection"
+    "takeout-redshift-connection",
   ]
 }
 
