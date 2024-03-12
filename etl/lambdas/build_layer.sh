@@ -13,11 +13,17 @@ source lambda-layer-env/bin/activate
 # Install dependencies
 pip install -r $REQUIREMENTS_FILE
 
+# Dynamically find the site-packages directory
+SITE_PACKAGES=$(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+echo "Site-packages directory: ${SITE_PACKAGES}"
+
 # Prepare the ZIP package
-mkdir python
-cd python
-cp -R ${LAMBDA_LAYER_DIR}/lambda-layer-env/lib/python3.9/site-packages/* .
-zip -r9 ${LAMBDA_LAYER_DIR}/lambda-layer.zip .
+mkdir -p "${LAMBDA_LAYER_DIR}/python/lib/python3.9/site-packages"
+cp -R ${SITE_PACKAGES}/* "${LAMBDA_LAYER_DIR}/python/lib/python3.9/site-packages/"
+
+pushd "${LAMBDA_LAYER_DIR}"
+zip -r9 lambda-layer.zip python
+popd
 
 # Upload the ZIP file to S3
 aws s3 cp ${LAMBDA_LAYER_DIR}/lambda-layer.zip s3://${BUCKET_NAME}/lambda-layer.zip
@@ -25,4 +31,4 @@ aws s3 cp ${LAMBDA_LAYER_DIR}/lambda-layer.zip s3://${BUCKET_NAME}/lambda-layer.
 # Cleanup
 deactivate
 rm -rf lambda-layer-env
-rm -rf python
+rm -rf "${LAMBDA_LAYER_DIR}/python"
