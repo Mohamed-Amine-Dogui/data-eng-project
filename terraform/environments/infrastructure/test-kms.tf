@@ -92,4 +92,21 @@ data "aws_iam_policy_document" "test_kms_key_policy" {
     }
   }
 
+  statement {
+    sid    = "Allow AWS Glue to use the key"
+    effect = "Allow"
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey"
+    ]
+    resources = ["*"]
+    principals {
+      identifiers = ["glue.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+
 }

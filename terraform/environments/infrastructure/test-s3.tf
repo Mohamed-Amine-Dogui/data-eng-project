@@ -136,14 +136,12 @@ module "glue_data_bucket" {
   enable                        = true
   environment                   = var.stage
   project                       = var.project
+  git_repository                = "github.com/Mohamed-Amine-Dogui/data-eng-project"
   s3_bucket_name                = "glue-data-bucket"
   s3_bucket_acl                 = "private"
   target_bucket_id              = module.logs_bucket.s3_bucket
-  versioning_enabled            = true
+  versioning_enabled            = false
   enforce_SSL_encryption_policy = true
   force_destroy                 = local.in_development
-  kst                           = var.tag_KST
-  wa_number                     = var.wa_number
-  git_repository                = "github.com/Mohamed-Amine-Dogui/data-eng-project"
-
+  kms_policy_to_attach          = data.aws_iam_policy_document.test_kms_key_policy.json
 }
