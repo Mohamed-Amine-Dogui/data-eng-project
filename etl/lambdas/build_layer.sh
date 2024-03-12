@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-LAMBDA_LAYER_DIR="$(pwd)"
+LAMBDA_LAYER_DIR="/home/runner/work/data-eng-project/data-eng-project/etl/lambdas"
 echo "Lambda Layer Directory: ${LAMBDA_LAYER_DIR}"
 REQUIREMENTS_FILE="${LAMBDA_LAYER_DIR}/layer_requirements.txt"
 BUCKET_NAME=$1  # First argument to the script is the S3 bucket name
