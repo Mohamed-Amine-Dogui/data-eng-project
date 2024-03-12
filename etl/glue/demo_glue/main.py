@@ -20,7 +20,7 @@ from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 __version__ = "0.2.0"
 
 
-def create_df():
+def create_df(ss):
     # Dummy data generation
     data = [
         {"name": "John Doe", "date": "2024-03-10", "order_id": 1001, "price": 150},
@@ -102,7 +102,9 @@ if __name__ == "__main__":
         "s3://", target_bucket_name, f"data_{datetime.now().strftime('%Y-%m-%d')}.csv"
     )
 
-    df = create_df()
+    df = create_df(ss)
+    df.show()
+
     df.write.mode("overwrite").csv(s3_output_path, header=True)
 
     # Commit the job to indicate completion
