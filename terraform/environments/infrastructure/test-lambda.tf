@@ -25,6 +25,7 @@ module "test_lambda" {
   memory_size                 = 1000
   timeout                     = 900
   logs_kms_key_arn            = module.test_kms_key.kms_key_arn
+  lambda_layers               = [aws_lambda_layer_version.lambda_layer.arn]
 
 
   lambda_env_vars = {
@@ -125,5 +126,42 @@ resource "aws_kms_grant" "test_lambda_grant_kms_key" {
     "Encrypt",
     "GenerateDataKey",
     "DescribeKey"
+  ]
+}
+
+
+########################################################################################################################
+###   Test Lambda Layer
+########################################################################################################################
+resource "null_resource" "build_lambda_layer" {
+  triggers = {
+    layer_rebuild = var.layer_rebuild_trigger
+    #always_run = timestamp()
+  }
+
+  #  provisioner "local-exec" {
+  #    # Rebuilding layer because timestamp changed
+  #    command = "bash ${abspath(path.cwd)}/../../../etl/lambdas/build_layer.sh ${module.source_code_bucket.s3_bucket}"
+  #    environment = {
+  #      PYTHON_VERSION = "3.9"
+  #    }
+  #  }
+
+  provisioner "local-exec" {
+    command = "bash ${path.module}/../../../etl/lambdas/build_layer.sh ${module.source_code_bucket.s3_bucket}"
+    environment = {
+      PYTHON_VERSION = "3.9"
+    }
+  }
+}
+
+resource "aws_lambda_layer_version" "lambda_layer" {
+  layer_name          = module.generic_labels.resource["layer"]["id"]
+  s3_bucket           = module.source_code_bucket.s3_bucket
+  s3_key              = "lambdas_layer.zip"
+  compatible_runtimes = ["python3.9"]
+
+  depends_on = [
+    null_resource.build_lambda_layer
   ]
 }

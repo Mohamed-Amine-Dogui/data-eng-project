@@ -114,7 +114,8 @@ module "generic_labels" {
     "monitoring_topic",
     "notebook_user_pw",
     "my-test-new-bucket",
-    "grant"
+    "grant",
+    "layer"
   ]
 }
 
