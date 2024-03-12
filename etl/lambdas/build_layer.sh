@@ -22,11 +22,12 @@ mkdir -p "${LAMBDA_LAYER_DIR}/python/lib/python3.9/site-packages"
 cp -R ${SITE_PACKAGES}/* "${LAMBDA_LAYER_DIR}/python/lib/python3.9/site-packages/"
 
 pushd "${LAMBDA_LAYER_DIR}"
-zip -r9 lambda-layer.zip python
+# Update the zip file name to match the s3_key specified in Terraform
+zip -r9 lambdas_layer.zip python
 popd
 
-# Upload the ZIP file to S3
-aws s3 cp ${LAMBDA_LAYER_DIR}/lambda-layer.zip s3://${BUCKET_NAME}/lambda-layer.zip
+# Update the S3 cp command to match the zip file name and s3_key
+aws s3 cp ${LAMBDA_LAYER_DIR}/lambdas_layer.zip s3://${BUCKET_NAME}/lambdas_layer.zip
 
 # Cleanup
 deactivate
