@@ -4,11 +4,12 @@
 module "test_lambda" {
   source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-aws-lambda-vpc.git?ref=tags/0.0.1"
 
-  enable     = true
-  depends_on = [module.test_kms_key]
-  stage      = var.stage
-  project    = var.project
-  region     = var.aws_region
+  enable         = true
+  depends_on     = [module.test_kms_key]
+  stage          = var.stage
+  project        = var.project
+  region         = var.aws_region
+  git_repository = var.git_repository
 
 
   additional_policy        = data.aws_iam_policy_document.test_lambda_policy.json
@@ -22,9 +23,9 @@ module "test_lambda" {
   lambda_base_dir             = "${abspath(path.cwd)}/../../../etl/lambdas/demo"
   lambda_source_dir           = "${abspath(path.cwd)}/../../../etl/lambdas/demo/src"
   memory_size                 = 1000
-  timeout                     = 800
+  timeout                     = 900
   logs_kms_key_arn            = module.test_kms_key.kms_key_arn
-  git_repository              = var.git_repository
+
 
   lambda_env_vars = {
     stage                   = var.stage
@@ -76,7 +77,8 @@ Source: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permission
       "kms:Describe*"
     ]
     resources = [
-      module.test_kms_key.kms_key_arn
+      module.test_kms_key.kms_key_arn,
+      module.source_code_bucket.aws_kms_key_arn
     ]
   }
 
