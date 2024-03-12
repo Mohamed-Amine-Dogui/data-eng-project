@@ -46,13 +46,6 @@ module "test_glue_job" {
   // This attribute is called like this in the module but we need to retreive the KMS-key of the Target bucket where it will write the files after processing
   target_bucket_kms_key_arn = module.glue_data_bucket.aws_kms_key_arn
 
-  tags_kms = {
-    ProjectID = "demo"
-  }
-
-  tags_role = {
-    ProjectID = "demo"
-  }
 
   default_arguments = {
     // Glue Native
