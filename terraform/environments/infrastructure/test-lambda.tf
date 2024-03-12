@@ -139,16 +139,8 @@ resource "null_resource" "build_lambda_layer" {
     #always_run = timestamp()
   }
 
-  #  provisioner "local-exec" {
-  #    # Rebuilding layer because timestamp changed
-  #    command = "bash ${abspath(path.cwd)}/../../../etl/lambdas/build_layer.sh ${module.source_code_bucket.s3_bucket}"
-  #    environment = {
-  #      PYTHON_VERSION = "3.9"
-  #    }
-  #  }
-
   provisioner "local-exec" {
-    command = "bash ${path.module}/../../../etl/lambdas/build_layer.sh ${module.source_code_bucket.s3_bucket}"
+    command = "bash ${abspath(path.cwd)}/../../../etl/lambdas/build_layer.sh ${module.source_code_bucket.s3_bucket}"
     environment = {
       PYTHON_VERSION = "3.9"
     }
