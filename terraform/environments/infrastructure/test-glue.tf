@@ -6,10 +6,6 @@ resource "aws_s3_object" "glue_script" {
   bucket         = module.glue_scripts_bucket.s3_bucket
   key            = "artifact/${module.generic_labels.resource["glue-job"]["id"]}/main.py"
   content_base64 = filebase64("${path.module}/../../../etl/glue/demo_glue/main.py")
-
-  tags = {
-    ProjectID = var.project
-  }
 }
 
 
