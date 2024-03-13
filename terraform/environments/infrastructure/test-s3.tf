@@ -150,7 +150,7 @@ module "glue_data_bucket" {
   transition_lifecycle_rule_enabled = false
   expiration_lifecycle_rule_enabled = false
   enforce_SSL_encryption_policy     = false
-  use_aes256_encryption             = true
+  use_aes256_encryption             = false
   force_destroy                     = local.in_development
   kst                               = var.tag_KST
   wa_number                         = var.wa_number
