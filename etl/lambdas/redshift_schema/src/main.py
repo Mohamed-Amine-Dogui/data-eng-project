@@ -5,6 +5,7 @@ import logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 def lambda_handler(event, context):
     # Get bucket name and object key from the event
     bucket_name = event["Records"][0]["s3"]["bucket"]["name"]
@@ -19,7 +20,9 @@ def lambda_handler(event, context):
         # Log the SQL script content at INFO level
         logger.info(f"SQL Script Content:\n{sql_script}")
     except Exception as e:
-        logger.error(f"Error fetching SQL script {object_key} from bucket {bucket_name}: {str(e)}")
+        logger.error(
+            f"Error fetching SQL script {object_key} from bucket {bucket_name}: {str(e)}"
+        )
         return {
             "statusCode": 500,
             "body": f"Error processing SQL script: {object_key}",
