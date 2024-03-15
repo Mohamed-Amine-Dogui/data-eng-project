@@ -84,16 +84,18 @@ data "aws_iam_policy_document" "log_bucket_policy_document" {
   }
 }
 
+
 ########################################################################################################################
-###   Bucket for Lambda deployment
+###  Bucket for lambda scripts
 ########################################################################################################################
-module "source_code_bucket" {
+module "lambda_scripts_bucket" {
+
   source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-aws-s3-bucket//s3/s3-logging-encrypted?ref=tags/0.0.1"
 
   enable                        = true
   environment                   = var.stage
   project                       = var.project
-  s3_bucket_name                = "my-test-source-code-bucket"
+  s3_bucket_name                = "lambda-scripts-bucket"
   s3_bucket_acl                 = "private"
   target_bucket_id              = module.logs_bucket.s3_bucket
   versioning_enabled            = true
@@ -101,8 +103,7 @@ module "source_code_bucket" {
   force_destroy                 = local.in_development
   kst                           = var.tag_KST
   wa_number                     = var.wa_number
-  git_repository                = "github.com/Mohamed-Amine-Dogui/data-eng-project"
-
+  git_repository                = var.git_repository
 }
 
 
@@ -219,7 +220,6 @@ module "source_code_bucket" {
 #    ]
 #  }
 #}
-
 
 
 ########################################################################################################################

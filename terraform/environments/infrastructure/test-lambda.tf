@@ -16,7 +16,7 @@
 #  attach_additional_policy = true
 #
 #  lambda_unique_function_name = "my-first"
-#  artifact_bucket_name        = module.source_code_bucket.s3_bucket
+#  artifact_bucket_name        = module.lambda_scripts_bucket.s3_bucket
 #  runtime                     = "python3.9"
 #  handler                     = var.default_lambda_handler
 #  main_lambda_file            = "main"
@@ -28,7 +28,7 @@
 #
 #  lambda_env_vars = {
 #    stage                   = var.stage
-#    TARGET_DATA_BUCKET_NAME = module.source_code_bucket.s3_bucket #  bucket where we will put the raw data
+#    TARGET_DATA_BUCKET_NAME = module.lambda_scripts_bucket.s3_bucket #  bucket where we will put the raw data
 #  }
 #
 #  tags_lambda = {
@@ -59,8 +59,8 @@
 #      "s3:RestoreObject"
 #    ]
 #    resources = [
-#      module.source_code_bucket.s3_arn,
-#      "${module.source_code_bucket.s3_arn}/*",
+#      module.lambda_scripts_bucket.s3_arn,
+#      "${module.lambda_scripts_bucket.s3_arn}/*",
 #    ]
 #  }
 #
@@ -77,7 +77,7 @@
 #    ]
 #    resources = [
 #      module.test_kms_key.kms_key_arn,
-#      module.source_code_bucket.aws_kms_key_arn
+#      module.lambda_scripts_bucket.aws_kms_key_arn
 #    ]
 #  }
 #
