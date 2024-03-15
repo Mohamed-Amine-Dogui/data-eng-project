@@ -242,3 +242,8 @@ variable "default_lambda_handler" {
   description = "The name of the function handler inside main.py file"
   default     = "lambda_handler"
 }
+
+variable "redshift_schema_lambda_unique_function_name" {
+  description = "The unique name of the function "
+  default     = "redshift-schema-lambda"
+}
