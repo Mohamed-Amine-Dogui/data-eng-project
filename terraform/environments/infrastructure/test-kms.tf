@@ -24,14 +24,14 @@ module "test_kms_key" {
 
   key_admins = [
     data.aws_caller_identity.current.arn,
-    "arn:aws:iam::683603511960:user/dogui",
-    "arn:aws:iam::683603511960:root"
+    "arn:aws:iam::${local.account_id}:root",
+    "arn:aws:iam::${local.account_id}:user/dogui",
   ]
 
   encrypt_decrypt_arns = [
     data.aws_caller_identity.current.arn,
-    "arn:aws:iam::683603511960:user/dogui",
-    "arn:aws:iam::683603511960:root"
+    "arn:aws:iam::${local.account_id}:root",
+    "arn:aws:iam::${local.account_id}:user/dogui",
   ]
 
   aws_service_configurations = [
@@ -60,8 +60,8 @@ data "aws_iam_policy_document" "test_kms_key_policy" {
     principals {
       identifiers = [
         data.aws_caller_identity.current.arn,
-        "arn:aws:iam::683603511960:user/dogui",
-        "arn:aws:iam::683603511960:root"
+        "arn:aws:iam::${local.account_id}:root",
+        "arn:aws:iam::${local.account_id}:user/dogui",
       ]
       type = "AWS"
     }
@@ -89,8 +89,8 @@ data "aws_iam_policy_document" "test_kms_key_policy" {
     principals {
       identifiers = [
         data.aws_caller_identity.current.arn,
-        "arn:aws:iam::683603511960:user/dogui",
-        "arn:aws:iam::683603511960:root"
+        "arn:aws:iam::${local.account_id}:root",
+        "arn:aws:iam::${local.account_id}:user/dogui",
       ]
       type = "AWS"
     }
