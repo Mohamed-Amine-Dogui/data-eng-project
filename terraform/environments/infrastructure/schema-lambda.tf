@@ -2,10 +2,14 @@
 ###  Redshift_schema lambda
 ########################################################################################################################
 module "redshift_schema_lambda" {
+
   source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-aws-lambda-vpc.git?ref=tags/0.0.1"
 
-  enable         = true
-  depends_on     = [module.test_kms_key]
+  enable = true
+  depends_on = [
+    module.test_kms_key,
+    module.lambda_scripts_bucket,
+  ]
   stage          = var.stage
   project        = var.project
   region         = var.aws_region

@@ -232,7 +232,8 @@ module "redshift_schema_bucket" {
   source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-aws-s3-bucket//s3/s3-encrypted?ref=tags/0.0.1"
 
   depends_on = [
-    module.test_kms_key
+    module.test_kms_key,
+    module.lambda_scripts_bucket,
   ]
 
   environment      = var.stage
