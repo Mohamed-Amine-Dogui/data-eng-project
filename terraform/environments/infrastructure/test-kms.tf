@@ -2,7 +2,6 @@
 ########################################################################################################################
 ###  KMS Key
 ########################################################################################################################
-
 module "test_kms_key" {
   source = "git::ssh://git@github.com/Mohamed-Amine-Dogui/tf-module-aws-kms-key.git?ref=tags/0.0.1"
 
@@ -113,22 +112,6 @@ data "aws_iam_policy_document" "test_kms_key_policy" {
     }
   }
 
-  statement {
-    sid    = "Allow AWS Lambda to use the key"
-    effect = "Allow"
-    actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey"
-    ]
-    resources = ["*"]
-    principals {
-      identifiers = ["arn:aws:lambda:${var.aws_region}:${local.account_id}:function:${var.redshift_schema_lambda_unique_function_name}"]
-      type        = "AWS"
-    }
-  }
 
   statement {
     sid    = "Allow AWS S3 to use the key"
