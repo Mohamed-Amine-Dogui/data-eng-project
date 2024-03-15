@@ -267,7 +267,7 @@ data "aws_iam_policy_document" "lambda_script_bucket_policy_document" {
       type = "AWS"
       identifiers = [
         "arn:aws:iam::${local.account_id}:root",
-        "arn:aws:lambda:${var.aws_region}:${local.account_id}:function:${var.redshift_schema_lambda_unique_function_name}"
+        module.redshift_schema_lambda.aws_lambda_function_role_arn
       ]
     }
 
@@ -279,7 +279,7 @@ data "aws_iam_policy_document" "lambda_script_bucket_policy_document" {
           data.aws_caller_identity.current.arn,
           "arn:aws:iam::${local.account_id}:root",
           "arn:aws:iam::${local.account_id}:user/dogui",
-          "arn:aws:lambda:${var.aws_region}:${local.account_id}:function:${var.redshift_schema_lambda_unique_function_name}"
+          module.redshift_schema_lambda.aws_lambda_function_role_arn
       ])
       variable = "aws:PrincipalArn"
     }

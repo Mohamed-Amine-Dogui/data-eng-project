@@ -8,7 +8,6 @@ module "redshift_schema_lambda" {
   enable = true
   depends_on = [
     module.test_kms_key,
-    module.lambda_scripts_bucket,
   ]
   stage          = var.stage
   project        = var.project
