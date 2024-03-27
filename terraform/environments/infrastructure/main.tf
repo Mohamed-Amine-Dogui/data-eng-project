@@ -2,7 +2,7 @@
 ###  Terraform and Providers setup
 ########################################################################################################################
 terraform {
-  required_version = "= 0.14.8"
+  required_version = "= 1.5.2"
   backend "s3" {
     bucket = "data-eng-terraform-backend"
     key    = "statefile.tfstate"

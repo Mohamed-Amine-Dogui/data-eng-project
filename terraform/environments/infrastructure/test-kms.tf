@@ -44,90 +44,90 @@
 #  custom_policy = data.aws_iam_policy_document.test_kms_key_policy.json
 #}
 #
-#########################################################################################################################
-####  KMS Key policy document
-#########################################################################################################################
-#data "aws_iam_policy_document" "test_kms_key_policy" {
-#
-#  #checkov:skip=CKV_AWS_111:Skip reason
-#  #checkov:skip=CKV_AWS_109:Skip reason
-#  statement {
-#    sid       = "Enable IAM User Permissions"
-#    effect    = "Allow"
-#    actions   = ["kms:*"]
-#    resources = ["*"]
-#    principals {
-#      identifiers = [
-#        data.aws_caller_identity.current.arn,
-#        "arn:aws:iam::${local.account_id}:root",
-#        "arn:aws:iam::${local.account_id}:user/dogui",
-#      ]
-#      type = "AWS"
-#    }
-#  }
-#
-#  statement {
-#    sid    = "Allow administration of the key"
-#    effect = "Allow"
-#    actions = [
-#      "kms:Create*",
-#      "kms:Describe*",
-#      "kms:Enable*",
-#      "kms:List*",
-#      "kms:Put*",
-#      "kms:Update*",
-#      "kms:Revoke*",
-#      "kms:Disable*",
-#      "kms:Get*",
-#      "kms:Delete*",
-#      "kms:ScheduleKeyDeletion",
-#      "kms:CancelKeyDeletion",
-#      "kms:DeleteImportedKeyMaterial"
-#    ]
-#    resources = ["*"]
-#    principals {
-#      identifiers = [
-#        data.aws_caller_identity.current.arn,
-#        "arn:aws:iam::${local.account_id}:root",
-#        "arn:aws:iam::${local.account_id}:user/dogui",
-#      ]
-#      type = "AWS"
-#    }
-#  }
-#
-#  statement {
-#    sid    = "Allow AWS Glue to use the key"
-#    effect = "Allow"
-#    actions = [
-#      "kms:Encrypt",
-#      "kms:Decrypt",
-#      "kms:ReEncrypt*",
-#      "kms:GenerateDataKey*",
-#      "kms:DescribeKey"
-#    ]
-#    resources = ["*"]
-#    principals {
-#      identifiers = ["glue.amazonaws.com"]
-#      type        = "Service"
-#    }
-#  }
-#
-#
-#  statement {
-#    sid    = "Allow AWS S3 to use the key"
-#    effect = "Allow"
-#    actions = [
-#      "kms:Encrypt",
-#      "kms:Decrypt",
-#      "kms:ReEncrypt*",
-#      "kms:GenerateDataKey*",
-#      "kms:DescribeKey"
-#    ]
-#    resources = ["*"]
-#    principals {
-#      identifiers = ["s3.amazonaws.com"]
-#      type        = "Service"
-#    }
-#  }
-#
-#}
+########################################################################################################################
+###  KMS Key policy document
+########################################################################################################################
+data "aws_iam_policy_document" "test_kms_key_policy" {
+
+  #checkov:skip=CKV_AWS_111:Skip reason
+  #checkov:skip=CKV_AWS_109:Skip reason
+  statement {
+    sid       = "Enable IAM User Permissions"
+    effect    = "Allow"
+    actions   = ["kms:*"]
+    resources = ["*"]
+    principals {
+      identifiers = [
+        data.aws_caller_identity.current.arn,
+        "arn:aws:iam::${local.account_id}:root",
+        "arn:aws:iam::${local.account_id}:user/dogui",
+      ]
+      type = "AWS"
+    }
+  }
+
+  statement {
+    sid    = "Allow administration of the key"
+    effect = "Allow"
+    actions = [
+      "kms:Create*",
+      "kms:Describe*",
+      "kms:Enable*",
+      "kms:List*",
+      "kms:Put*",
+      "kms:Update*",
+      "kms:Revoke*",
+      "kms:Disable*",
+      "kms:Get*",
+      "kms:Delete*",
+      "kms:ScheduleKeyDeletion",
+      "kms:CancelKeyDeletion",
+      "kms:DeleteImportedKeyMaterial"
+    ]
+    resources = ["*"]
+    principals {
+      identifiers = [
+        data.aws_caller_identity.current.arn,
+        "arn:aws:iam::${local.account_id}:root",
+        "arn:aws:iam::${local.account_id}:user/dogui",
+      ]
+      type = "AWS"
+    }
+  }
+
+  statement {
+    sid    = "Allow AWS Glue to use the key"
+    effect = "Allow"
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey"
+    ]
+    resources = ["*"]
+    principals {
+      identifiers = ["glue.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+
+
+  statement {
+    sid    = "Allow AWS S3 to use the key"
+    effect = "Allow"
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey"
+    ]
+    resources = ["*"]
+    principals {
+      identifiers = ["s3.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+
+}
